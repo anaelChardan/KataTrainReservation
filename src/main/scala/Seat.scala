@@ -1,0 +1,1 @@
+case class Seat(val coach: String, val seatNumber: Int)
