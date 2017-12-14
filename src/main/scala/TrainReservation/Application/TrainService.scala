@@ -1,9 +1,10 @@
 package TrainReservation.Application
 
-import TrainReservation.Domain.{BookingReference, Seats, Train, TrainId}
+import TrainReservation.Domain._
 
+//PROVIDED IN PROJECT
 trait TrainService {
   def trainData(trainId: TrainId): Train
-  def reserveASeat(trainId: TrainId, bookingReference: BookingReference, seats: Seats)
+  def reserveASeat(trainId: TrainId, bookingReference: BookingReference, seats: List[Seat])
   def reset(train: TrainId)
 }
