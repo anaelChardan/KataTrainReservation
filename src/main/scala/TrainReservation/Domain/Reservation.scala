@@ -1,3 +1,3 @@
 package TrainReservation.Domain
 
-case class Reservation(val trainId: String, val bookingId: String, val seats: List[Seat])
+case class Reservation(val trainId: TrainId, val bookingReference: BookingReference, val seats: List[Seat])
