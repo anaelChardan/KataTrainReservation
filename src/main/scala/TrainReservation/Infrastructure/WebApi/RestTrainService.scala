@@ -30,14 +30,14 @@ class RestTrainService extends TrainService {
       }
     }).distinct
 
-    val coaches = Coaches(coachLetters.map(coachLetter => {
-      Coach(coachLetter, ReferencedSeats(referencedSeats.filter(referencedSeat => referencedSeat.seat.coach == coachLetter)))
-    }).toList)
+    val coaches = coachLetters.map(coachLetter => {
+      Coach(coachLetter, referencedSeats.filter(referencedSeat => referencedSeat.seat.coach == coachLetter))
+    }).toList
 
     Train(trainId, coaches)
   }
 
-  override def reserveASeat(trainId: TrainId, bookingReference: BookingReference, seats: Seats): Unit = ???
+  override def reserveASeat(trainId: TrainId, bookingReference: BookingReference, seats: List[Seat]): Unit = ???
 
   override def reset(trainId: TrainId): Unit = io.Source.fromURL(s"http://localhost:8081/reset/${trainId}").mkString
 }
