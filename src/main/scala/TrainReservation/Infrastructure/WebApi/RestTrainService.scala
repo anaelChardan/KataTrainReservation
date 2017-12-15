@@ -5,8 +5,12 @@ import TrainReservation.Application.TrainService
 import TrainReservation.Domain._
 
 class RestTrainService extends TrainService {
-  override def trainData(trainId: TrainId): Train = {
+  override def trainData(trainId: TrainId): Option[Train] = {
     val jsonValue: JsValue = Json.parse(io.Source.fromURL(s"http://localhost:8081/data_for_train/${trainId}").mkString)
+
+    if (jsonValue == "null")
+      return None
+
     val seats: JsObject = jsonValue("seats").asInstanceOf[JsObject]
 
     val referencedSeats: List[ReferencedSeat] = seats.fields.map({
@@ -34,10 +38,6 @@ class RestTrainService extends TrainService {
       Coach(coachLetter, referencedSeats.filter(referencedSeat => referencedSeat.seat.coach == coachLetter))
     }).toList
 
-    Train(trainId, coaches)
+    Some(Train(trainId, coaches))
   }
-
-  override def reserveASeat(trainId: TrainId, bookingReference: BookingReference, seats: List[Seat]): Unit = ???
-
-  override def reset(trainId: TrainId): Unit = io.Source.fromURL(s"http://localhost:8081/reset/${trainId}").mkString
 }

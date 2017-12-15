@@ -1,8 +1,5 @@
 package TrainReservation.Infrastructure.UI.CLI
 
-import TrainReservation.Domain.TrainId
-import TrainReservation.Infrastructure.WebApi.RestTrainService
-
 import scala.io.StdIn
 
 object Main extends App {
@@ -24,7 +21,7 @@ object Main extends App {
       }
 
       handlers.collectFirst {
-        case handler if handler.usage().startsWith(entry) => handler
+        case handler if entry.startsWith(handler.usage()) => handler
       }  match {
         case Some(handler) => {
           handler.execute(entry) match {

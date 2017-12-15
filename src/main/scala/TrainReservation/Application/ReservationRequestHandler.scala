@@ -3,10 +3,16 @@ package TrainReservation.Application
 import TrainReservation.Domain._
 
 //TODO Why more in Application than Domain?
-class TicketOffice(val trainService: TrainService, bookingReferenceProvider: BookingReferenceProvider) {
-  //TODO: Should be void as it is a command handler
-  def makeReservation(reservationRequest: ReservationRequest): Option[Reservation] = {
-    val train: Train = trainService.trainData(TrainId(reservationRequest.trainId))
+class ReservationRequestHandler(val trainService: TrainService, bookingReferenceProvider: BookingReferenceProvider) {
+  //TODO: Should it be void as it is a command handler ?
+  def handle(reservationRequest: ReservationRequest): Option[Reservation] = {
+    val trainOption: Option[Train] = trainService.trainData(TrainId(reservationRequest.trainId))
+
+    if (trainOption.isEmpty) {
+      return None
+    }
+
+    val train: Train = trainOption.get
 
     if (!train.canAcceptThosePeople(reservationRequest.seatCount)) {
       return None

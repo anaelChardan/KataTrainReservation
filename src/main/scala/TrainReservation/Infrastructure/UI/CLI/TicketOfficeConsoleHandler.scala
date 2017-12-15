@@ -1,6 +1,6 @@
 package TrainReservation.Infrastructure.UI.CLI
 
-import TrainReservation.Application.{ReservationRequest, TicketOffice}
+import TrainReservation.Application.{ReservationRequest, ReservationRequestHandler}
 import TrainReservation.Infrastructure.WebApi.{RestBookingReferenceProvider, RestTrainService}
 
 class TicketOfficeConsoleHandler extends ConsoleHandler {
@@ -8,14 +8,14 @@ class TicketOfficeConsoleHandler extends ConsoleHandler {
   override def usage(): String = ":make_reservation"
 
   override def execute(entry: String): Either[String, String] = {
-    val pattern = ":make_reservation (([0-9]|[A-Za-z])+) ([0-9]+)".r
+    val pattern = ":make_reservation ([a-zA-Z0-9_]+) ([0-9]+)".r
 
     entry match {
       case pattern(trainId, numberOfSeats) => {
         val reservationRequest = ReservationRequest(trainId, numberOfSeats.toInt)
-        val ticketOffice: TicketOffice = new TicketOffice(new RestTrainService, new RestBookingReferenceProvider)
+        val ticketOffice: ReservationRequestHandler = new ReservationRequestHandler(new RestTrainService, new RestBookingReferenceProvider)
 
-        ticketOffice.makeReservation(reservationRequest) match {
+        ticketOffice.handle(reservationRequest) match {
           case Some(reservation) =>
             val seats = reservation.seats.map(seat => s"\42${seat.seatNumber}${seat.coach}\42")
 
@@ -26,7 +26,9 @@ class TicketOfficeConsoleHandler extends ConsoleHandler {
           }
       }
 
-      case _ => Right(s"Cannot parse the entry ${entry}")
+      case _ => {
+        Right(s"Cannot parse the entry ${entry}")
+      }
     }
   }
 }
